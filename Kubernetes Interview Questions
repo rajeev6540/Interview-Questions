@@ -132,3 +132,121 @@ To secure communication between components in a Kubernetes cluster, you can:
 
 Q30: What is the role of kube-proxy in Kubernetes, and how does it work?
 kube-proxy is a network proxy that runs on each node in the cluster. Its primary role is to maintain network rules that allow network communication to and from pods. It facilitates load balancing for services by managing virtual IPs and routing traffic to the appropriate backend pods based on the service’s defined rules.
+
+Q31: Specify the uses of Pod, Replica-Set, and Deployment.
+Pod: A Pod is the smallest deployable unit in Kubernetes and represents a single instance of a running process in the cluster. A pod can have multiple containers in it.
+ReplicaSet: A ReplicaSet is a higher-level abstraction that ensures a specified number of replicas (identical copies) of a Pod are running at all times.
+Deployment: A Deployment is a higher-level abstraction that manages ReplicaSets and provides declarative updates for Pods and ReplicaSets.
+Rolling updates: Deployments support rolling updates, allowing you to update the application without downtime by gradually replacing old Pods with new ones.
+Rollback: If an update causes issues, you can easily roll back to a previously known-good version.
+Self-healing: In case a Pod or node fails, the Deployment controller ensures that the desired number of replicas is maintained.
+Scaling: Deployments allow you to scale the application up or down by adjusting the number of replicas.
+
+Q32: I have thousands of pods and lots of applications running on the pods which deployment strategy you will follow rolling or re-create? and why?
+Rolling Updates:
+A rolling update strategy gradually replaces instances of the old application with instances of the new version. This means that your application remains available throughout the update process, as the new pods are slowly introduced and the old ones are terminated.
+2. Re-create Strategy:
+In the re-create strategy, all existing pods with the old version of the application are terminated before the new version is deployed. This means there will be a brief downtime during the update process.
+
+Q33: What are the components of k8s?
+Master Node: The master node is responsible for managing the cluster and orchestrating its components. It consists of several components
+Kube API Server: The central control point and the front end for the Kubernetes API.
+etcd: A distributed key-value store that stores the cluster’s configuration data and the current state.
+Scheduler: The component that assigns newly created pods to nodes based on resource requirements and constraints.
+Controller Manager: A set of controllers that handle various aspects of the cluster, such as node and replica management, endpoints, services, etc.
+Worker Nodes: These are the machines where containerized applications (pods) are deployed and run. Each worker node runs the following components
+Kubelet: The primary agent that runs on each node and communicates with the master. It is responsible for starting, stopping, and monitoring containers as instructed by the master.
+Container Runtime: The software responsible for running containers, such as Docker, containerd, or CRI-O.
+kube-proxy: Manages network connectivity for pods and services on the node.
+Pods: The basic building blocks in Kubernetes. A pod is the smallest and simplest unit in the Kubernetes object model, representing one or more containers that are deployed together on the same host and share the same network namespace.
+ReplicaSets: A higher-level abstraction that ensures a specified number of replicas (identical copies) of a pod are running at all times.
+Services: An abstraction that defines a stable endpoint (IP address and port) to connect to a group of pods, allowing them to be accessed via a single IP address and load-balanced if multiple replicas exist.
+Volumes: A way to provide persistent storage to containers within pods.
+Namespaces: A virtual cluster within a Kubernetes cluster, used to divide resources and create isolation between different applications or teams.
+ConfigMaps and Secrets: ConfigMaps store configuration data, while Secrets store sensitive information like passwords or API keys. Secrets are always in the base64 encoding format. Both can be used to decouple configuration from container images.
+Deployment: A higher-level abstraction that allows declarative updates to pods and replica sets.
+StatefulSets: An extension of ReplicaSets to handle stateful applications with unique identities and stable network identities.
+DaemonSets: Ensures that all or some nodes run a copy of a pod, typically used for system daemons.
+
+Q34: What is PV & PVC?
+PV: Persistent Volume
+A Persistent Volume (PV) in Kubernetes is a piece of storage in the cluster that has been provisioned by an administrator. It is a way to abstract the underlying storage technology and provide a unified interface for applications to request and use storage resources. PVs can be thought of as a “claimable” resource by pods.
+2. PVC: Persistent Volume Claim
+A Persistent Volume Claim (PVC) is a request for storage by a user or application. It allows users to request specific storage resources (size, access mode, etc.) without needing to know the details of the underlying storage technology. PVCs provide a way for pods to dynamically request and use storage volumes from the available PVs.
+
+Q35: What is taint & toleration in k8s?
+Taint: A taint is a label applied to a node in the Kubernetes cluster, indicating that the node has a specific attribute or constraint that affects the types of pods that can be scheduled on it. Taints are typically used to prevent pods from being scheduled on specific nodes unless those pods have corresponding tolerations.
+Toleration: A toleration is a property defined in a pod’s configuration that allows the pod to be scheduled on nodes with specific taints. When you specify a toleration for a pod, you are essentially telling Kubernetes that the pod is willing to tolerate nodes with the specified taints. Pods without appropriate tolerations will not be scheduled on nodes with matching taints.
+
+Q36: What is the label & selector in k8s?
+Labels: Labels are key-value pairs that you can attach to Kubernetes objects, such as pods, nodes, services, and more. They are used to mark resources with metadata that provides additional information about the resource.
+Selectors: Selectors are used to efficiently and flexibly identify a group of resources based on their labels. Selectors allow you to filter and target specific resources that match certain criteria.
+
+Q37: What is Node Affinity in k8s?
+Node affinity refers to a feature that allows you to specify rules or preferences for the scheduling of pods onto nodes (worker machines) within a cluster. It lets you control where pods are placed based on node properties, such as labels or other node attributes.
+Hardware Requirements: If certain nodes in your cluster have specialized hardware (e.g., GPUs) and your pods require that hardware, you can use node affinity to ensure those pods are scheduled only on nodes with the required hardware.
+Topology Constraints: You might want to ensure that pods are distributed across different availability zones, regions, or data centers for high availability. Node affinity can be used to spread pods across such topologies.
+Co-locating Pods: You might have pods that should run on the same node for performance or communication reasons. Node affinity can help ensure these pods are scheduled together.
+
+Q38: What are the different services within Kubernetes?
+Cluster IP service:
+The ClusterIP is the default Kubernetes service that provides service inside a cluster (with no external access) that other apps inside your cluster can access.
+2. Node Port service:
+
+The NodePort service is the most fundamental way to get external traffic directly to your service. It opens a specific port on all Nodes and forwards any traffic sent to this port to the service.
+3. Load Balancer service:
+The LoadBalancer service is used to expose services to the internet. A Network load balancer, for example, creates a single IP address that forwards all traffic to your service.
+
+Q39: What is a headless service?
+Headless services are particularly useful in scenarios where you need to discover and interact with individual pods within a Kubernetes service without going through a load balancer.
+This is where Headless service allows us to get all the pod's IP addresses through DNS lookup.
+
+Q40: What is Minikube?
+The Minikube makes it easy for the local running of Kubernetes. Within a virtual machine, the Minikube runs a single-node Kubernetes cluster.
+
+Q41: What is load balancing on Kubernetes?
+The process of load balancing will let us expose services. There are two types of load balancing when it comes to Kubernetes:
+Internal load balancing: This is used for balancing the loads automatically and allocating the pods with the required configuration.
+External load balancing: This directs the traffic from the external loads to the backend pods.
+
+Q42: What is crashloofbackoff state in a pod?
+CrashLoopBackOff is a Kubernetes state representing a restart loop happening in a Pod: a container in the Pod is started, but crashes and is then repeatedly restarted. CrashLoopBackOff is not an error in itself but indicates that there's an error happening that prevents a Pod from starting correctly.
+
+Q43: What is the Pending state in the Pod?
+If a Pod is stuck in Pending it means that it can not be scheduled onto a node.
+
+Q44: What is Readiness & Liveness Probe?
+Liveness Probe
+Suppose that a Pod is running our application inside a container, but due to some reason let’s say memory leak, CPU usage, application deadlock, etc the application is not responding to our requests, and is stuck in an error state.
+The liveness probe checks the container's health as we tell it to, and if for some reason the liveness probe fails, it restarts the container. We can define liveness probe in 3 ways
+2. Readiness Probe
+
+In some cases, we would like our application to be alive, but not serve traffic unless some conditions are met e.g, populating a dataset, waiting for some other service to be alive, etc.
+In such cases, we use a readiness probe. If the condition inside the readiness probe passes, only then our application can serve traffic.
+
+Q45: Deployment vs Statefulsets
+
+Deployment:
+Deployments are best suited for stateless applications, where each instance of the application is identical and can be easily replaced without concerns about its identity or data.
+When a pod that is managed by k8s gets deleted the new pod will come up with the new ID
+Deployment provides rolling updates & roll back feature and pods can easily be rolled out
+2. Satetfulsets:
+StatefulSets are designed for managing stateful applications, where each pod instance has a unique identity and possibly persistent data.
+When a pod that is managed by k8s gets deleted the new pod will come up with the same ID
+StatefulSets are more complex to update compared to Deployments, as you have to consider data migration, ordering, and potential disruption.
+
+Q46: What is cordon in k8s?
+In Kubernetes (k8s), a "cordon" refers to a feature that is used to mark a node as "unschedulable." When you cordon a node, it means that no new pods will be scheduled onto that node by the Kubernetes scheduler.
+
+Q47: What is draining of node in k8s?
+In Kubernetes (often abbreviated as K8s), a “node” refers to a worker machine in the cluster that runs containerized applications. These nodes are responsible for executing tasks and managing the containers. The process of “draining” a node in Kubernetes refers to safely evicting or relocating the workloads (containers) running on a node to other nodes in the cluster. This is typically done when you need to perform maintenance on the node, upgrade it, or decommission it.
+
+Q48: What is the ingress controller in k8s?
+Path and Host-Based Routing: You can configure the Ingress Controller to route traffic to different Services based on the URL path or the host header of the incoming request.
+Load Balancing: The Ingress Controller can distribute incoming traffic across multiple instances of a Service, helping to ensure high availability and efficient resource utilization.
+
+Q49: Can we put multiple containers inside a pod?
+Yes, a pod can contain multiple containers of a similar kind
+
+Q50: Can 2 pods on the same node communicate with each other?
+If two pods are scheduled on the same node, Pods use virtual bridges to communicate with each other.
